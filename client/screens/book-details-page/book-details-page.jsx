@@ -2,6 +2,8 @@ import React from 'react';
 import { Button, Icon, Item } from 'semantic-ui-react';
 import { books_db } from "../../../shared/collections/books";
 import { Files } from "../../../shared/collections/files";
+import { carts_db } from "../../../shared/collections/carts";
+import { HeaderComponent } from "../../components/header-component/header-component";
 
 export class BookDetailsPage extends React.Component {
 
@@ -19,6 +21,7 @@ export class BookDetailsPage extends React.Component {
 	render() {
 		return (
 			<div>
+				<HeaderComponent/>
 				<Item.Group>
 					<Item>
 						<Item.Image
@@ -38,23 +41,46 @@ export class BookDetailsPage extends React.Component {
 							<Item.Extra>
 								price: {this.state.price}
 							</Item.Extra>
-							<Button
-								secondary
-								animated='vertical'
-							>
-								<Button.Content
-									hidden
-								>
-									Buy
-								</Button.Content>
-								<Button.Content
-									visible
-								>
-									<Icon
-										name='shop'
-									/>
-								</Button.Content>
-							</Button>
+							{
+								(() => {
+									if (Meteor.user()) {
+										return (
+											<Button
+												secondary
+												animated='vertical'
+												onClick={() => {
+													let cart = carts_db.findOne({
+														CustomerID: Meteor.userId(),
+														Bid: this.props.params._id
+													});
+													if (!cart) {
+														carts_db.insert({
+															CustomerID: Meteor.userId(),
+															Bid: this.props.params._id,
+															Quantity: 1
+														});
+													}
+												}}
+											>
+												<Button.Content
+													hidden
+												>
+													Buy
+												</Button.Content>
+												<Button.Content
+													visible
+												>
+													<Icon
+														name='shop'
+													/>
+												</Button.Content>
+											</Button>
+										);
+									} else {
+										return null;
+									}
+								})()
+							}
 						</Item.Content>
 					</Item>
 				</Item.Group>

@@ -54,8 +54,14 @@ export class LoginPage extends React.Component {
 		);
 	}
 
+	componentDidMount() {
+		if (!Meteor.loggingIn() && Meteor.user() !== null) {
+			FlowRouter.go('/');
+		}
+	}
+
 	componentDidUpdate() {
-		if (Meteor.user() !== null) {
+		if (!Meteor.loggingIn() && Meteor.user() !== null) {
 			FlowRouter.go('/');
 		}
 	}

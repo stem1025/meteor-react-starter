@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Form, Input } from 'semantic-ui-react';
 import { FilesComponentContainerTracker } from "../../components/files-component/tracker";
 import { books_db } from "../../../shared/collections/books";
+import { HeaderComponent } from "../../components/header-component/header-component";
 
 export class AddBookPage extends React.Component {
 
@@ -16,6 +17,7 @@ export class AddBookPage extends React.Component {
 	render() {
 		return (
 			<div>
+				<HeaderComponent/>
 				<Form>
 					<Form.Field>
 						<label>
@@ -113,6 +115,18 @@ export class AddBookPage extends React.Component {
 				/>
 			</div>
 		);
+	}
+
+	componentDidMount() {
+		if (!Meteor.loggingIn() && !Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
+			FlowRouter.go('/');
+		}
+	}
+
+	componentDidUpdate() {
+		if (!Meteor.loggingIn() && !Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
+			FlowRouter.go('/');
+		}
 	}
 
 }
